@@ -32,6 +32,9 @@ git clone https://github.com/jerrykuku/luci-theme-argon.git --single-branch --de
 ## KMS激活
 svn export https://github.com/immortalwrt/luci/branches/master/applications/luci-app-vlmcsd package/new/luci-app-vlmcsd
 svn export https://github.com/immortalwrt/packages/branches/master/net/vlmcsd package/new/vlmcsd
+git clone https://github.com/kenzok8/small-package package/small-package
+git clone https://github.com/kenzok8/small package/small
+
 # edit package/new/luci-app-vlmcsd/Makefile
 sed -i 's/..\/..\/luci.mk/$(TOPDIR)\/feeds\/luci\/luci.mk/g' package/new/luci-app-vlmcsd/Makefile
 
