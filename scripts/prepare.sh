@@ -69,8 +69,8 @@ make defconfig
 
 #- name: SSH链接管理
 uses: P3TERX/ssh2actions@v1.0.0
-github.event.inputs.ssh == 'true' 
-if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
+#github.event.inputs.ssh == 'true' 
+if: ('true') || contains(github.event.action, 'ssh')
 
 # 编译固件
 make download -j$(nproc)
