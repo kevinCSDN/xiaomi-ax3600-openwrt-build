@@ -68,7 +68,7 @@ cp ../config/new-config .config
 make defconfig
 
   
-uses: P3TERX/ssh2actions@v1.0.0
+uses: P3TERX/ssh2actions
 env:
   TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
   TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
