@@ -67,50 +67,50 @@ bash ../scripts/preset-terminal-tools.sh
 cp ../config/new-config .config
 make defconfig
 
-    - name: SSH链接管理
-      uses: P3TERX/ssh2actions@v1.0.0
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  
+uses: P3TERX/ssh2actions@v1.0.0
+env:
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 
-    - name: 提取config
-      id: organize
-      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
-      run: |
-        cd openwrt
-        make defconfig
-        ls -a
-        sudo mkdir ${{ env.CONFIG }}config && sudo cp .config ${{ env.CONFIG }}config/${{ env.CONFIG }}.config
-        cd ${{ env.CONFIG }}config
-        ls
-        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        echo "status=success" >> $GITHUB_OUTPUT
-        echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+   
+id: organize
+   if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+   run: |
+   cd openwrt
+   make defconfig
+   ls -a
+   sudo mkdir ${{ env.CONFIG }}config && sudo cp .config ${{ env.CONFIG }}config/${{ env.CONFIG }}.config
+   cd ${{ env.CONFIG }}config
+   ls
+   echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+   echo "status=success" >> $GITHUB_OUTPUT
+   echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
         
-    - name: 上传config
-      uses: actions/upload-artifact@main
-      if: steps.organize.outputs.status == 'success' && !cancelled()
-      with:
-        name: ${{ env.CONFIG }}_config${{ env.FILE_DATE }}
-        path: ${{ env.FIRMWARE }}
+ 
+   uses: actions/upload-artifact@main
+   if: steps.organize.outputs.status == 'success' && !cancelled()
+   with:
+     name: ${{ env.CONFIG }}_config${{ env.FILE_DATE }}
+     path: ${{ env.FIRMWARE }}
 
-    - name: 生成发布标签
-      id: tag
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      run: |
-        echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")"
-        touch release.txt
-        echo "status=success" >> $GITHUB_OUTPUT
+ 
+   id: tag
+   if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+   run: |
+     echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")"
+     touch release.txt
+     echo "status=success" >> $GITHUB_OUTPUT
         
-    - name: 上传config文件并发布
-      uses: softprops/action-gh-release@v1
-      if: steps.tag.outputs.status == 'success' && !cancelled()
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.tag.outputs.release_tag }}
-        body_path: release.txt
-        files: ${{ env.FIRMWARE }}/*
+
+   uses: softprops/action-gh-release@v1
+   if: steps.tag.outputs.status == 'success' && !cancelled()
+   env:
+     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   with:
+     tag_name: ${{ steps.tag.outputs.release_tag }}
+     body_path: release.txt
+     files: ${{ env.FIRMWARE }}/*
 
 # 编译固件
 make download -j$(nproc)
